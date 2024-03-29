@@ -1,11 +1,21 @@
-import './App.css';
+import React from 'react';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import Home from './pages/Home';
+import Dashboard from './pages/Dashboard';
+import './assets/styles/App.css'
 
-function App() {
+
+const App = () => {
   return (
-    <div className="App">
-      <p>Hello world</p>
-    </div>
+    <Router>
+      <div className='App'>
+        <Switch>
+          <Route exact path="/" component={Home} />
+          <Route path="/dashboard" component={Dashboard} />
+        </Switch>
+      </div>
+    </Router>
   );
-}
+};
 
 export default App;
