@@ -1,7 +1,10 @@
 const express = require('express');
-const router = express.Router();
-const expenseController = require('../controllers/expenseController');
+const app = express()
 
 // Define API routes for expenses
 
-module.exports = router;
+app.get("/get", (req, res) => {
+    res.send("<h1>Hello server<h1>") 
+})
+
+module.exports = app;

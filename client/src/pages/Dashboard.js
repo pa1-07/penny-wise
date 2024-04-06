@@ -1,7 +1,12 @@
 import React from 'react';
 
 const Dashboard = () => {
-  // Implement your Dashboard component here
+
+  return (
+    <div className = 'Dashboard'>
+      <p>Hello Dashboard!</p>
+    </div>
+  )
 };
 
 export default Dashboard;

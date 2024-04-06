@@ -1,10 +1,9 @@
 import React from 'react';
 
 const Home = () => {
-  // Implement your Home component here
 
   return (
-    <div classname = 'Home'>
+    <div className = 'Home'>
       Hello world!
     </div>
   )
