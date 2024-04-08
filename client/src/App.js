@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
 import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
 import Notfound from "./pages/Notfound"
@@ -12,7 +12,7 @@ const App = () => {
     <Router>
       <>
         <Routes>
-          <Route exact path="/" element={<Home />} />
+          <Route exact path="/" element={<ProtectedRoutes><Home /></ProtectedRoutes>} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
           <Route path="/dashboard" element={<Dashboard />} />
@@ -22,5 +22,13 @@ const App = () => {
     </Router>
   );
 };
+
+export function ProtectedRoutes(props) {
+  if(localStorage.getItem('user')) {
+    return props.children
+  } else {
+    return <Navigate to='login' />
+  }
+}
 
 export default App;

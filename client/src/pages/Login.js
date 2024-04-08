@@ -17,6 +17,7 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import axios from "axios";
 import { USER_LOGIN_API } from "../services/api";
 import { useNavigate } from "react-router-dom";
+import CircularProgress from '@mui/material/CircularProgress';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -29,16 +30,20 @@ const Login = () => {
 
   const [showSuccessAlert, setShowSuccessAlert] = useState(false);
   const [showFailureAlert, setShowFailureAlert] = useState(false);
+  const [loading, setLoading] = useState(false)
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
+      setLoading(true)
       const userData = await axios.post(USER_LOGIN_API, data);
+      setLoading(false)
       setShowSuccessAlert(true);
       localStorage.setItem("user", JSON.stringify({ ...data, password: "" }));
-      navigate("/dashboard");
+      navigate("/");
       console.log("Login Successful", userData);
     } catch (e) {
+      setLoading(false)
       setShowFailureAlert(true);
       console.log("user or password not correct", e);
     }
@@ -63,6 +68,13 @@ const Login = () => {
     setShowFailureAlert(false);
   };
 
+  useEffect (() => {
+    if (localStorage.getItem('user')){
+      navigate('/')
+    }
+  }, [navigate])
+  
+
   return (
     <>
       <ThemeProvider theme={defaultTheme}>
@@ -82,6 +94,7 @@ const Login = () => {
             <Typography component="h1" variant="h5">
               Sign In
             </Typography>
+            {loading && <CircularProgress disableShrink />}
             <Box
               component="form"
               onSubmit={handleSubmit}

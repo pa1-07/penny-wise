@@ -17,6 +17,7 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { USER_REGISTER_API } from "../services/api";
+import CircularProgress from '@mui/material/CircularProgress';
 
 const Register = () => {
   const navigate = useNavigate();
@@ -29,17 +30,21 @@ const Register = () => {
   });
   const [showSuccessAlert, setShowSuccessAlert] = useState(false);
   const [showFailureAlert, setShowFailureAlert] = useState(false);
+  const [loading, setLoading] = useState(false)
 
   // Form submit call back function
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
+      setLoading(true)
       const userData = await axios.post(USER_REGISTER_API, data);
+      setLoading(false)
       setShowSuccessAlert(true);
       localStorage.setItem("user", JSON.stringify({ ...data, password: "" }));
       navigate("/login");
       console.log("Register Successful", userData);
     } catch (e) {
+      setLoading(false)
       setShowFailureAlert(true);
       console.log("user or password not correct", e);
     }
@@ -65,6 +70,12 @@ const Register = () => {
     setShowFailureAlert(false);
   };
 
+  useEffect (() => {
+    if (localStorage.getItem('user')){
+      navigate('/')
+    }
+  }, [navigate])
+
   return (
     <>
       <ThemeProvider theme={defaultTheme}>
@@ -84,6 +95,7 @@ const Register = () => {
             <Typography component="h1" variant="h5">
               Sign Up
             </Typography>
+            {loading && <CircularProgress disableShrink />}
             <Box
               component="form"
               onSubmit={handleSubmit}
