@@ -42,7 +42,7 @@ const Header = () => {
   return (
     <Box sx={{ flexGrow: 1 }} >
       {loading && <CircularProgress disableShrink />}
-      <AppBar position="static" className="navBar" >
+      <AppBar position="fixed" className='navBar'  >
         <Toolbar>
           <IconButton
             size="large"
@@ -53,7 +53,7 @@ const Header = () => {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }} className="navbarTitle">
             PennyWise
           </Typography>
 

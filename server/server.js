@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser')
 const userRoute = require('./routes/userRoute');
 const apiRoute = require('./routes/api');
+const transactionRoutes = require('./routes/transactionRoutes')
 const connectDb = require('./config/connectDb');
 const cors = require('cors')
 const dotenv = require('dotenv')
@@ -24,6 +25,8 @@ app.use(bodyParser.json());
 app.use('/api/users', userRoute);
 
 app.use('/api', apiRoute)
+
+app.use('/api/transaction', transactionRoutes)
 
 //middlewares
 

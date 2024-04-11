@@ -1,0 +1,11 @@
+/* transaction page */
+
+.content {
+    display: flex;
+    margin-top: 80px;
+}
+
+.homeCards {
+    position: fixed;
+    /* background-color: whitesmoke; */
+}
