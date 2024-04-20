@@ -13,7 +13,7 @@ const Footer = () => {
         style={{ top: "auto", bottom: 0 }}
       >
         <Toolbar>
-          <Typography variant="body2" color="black">
+          <Typography variant="body2" color="black" sx={{mb:2}}>
           © 2024 PennyWise
           </Typography>
         </Toolbar>

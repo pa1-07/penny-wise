@@ -11,6 +11,7 @@ import Menu from "@mui/material/Menu";
 import { useNavigate } from "react-router-dom";
 import "../assets/styles/Header.css";
 import CircularProgress from "@mui/material/CircularProgress";
+import Button from "@mui/material/Button";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -35,14 +36,24 @@ const Header = () => {
     setAnchorEl(event.currentTarget);
   };
 
+  const handleDashboardClick = (event) => {
+    setAnchorEl(event.currentTarget);
+    navigate("/dashboard");
+  };
+
+  const handleHomeClick = (event) => {
+    setAnchorEl(event.currentTarget);
+    navigate("/");
+  };
+
   const handleClose = () => {
     setAnchorEl(null);
   };
 
   return (
-    <Box sx={{ flexGrow: 1 }} >
+    <Box sx={{ flexGrow: 1 }}>
       {loading && <CircularProgress disableShrink />}
-      <AppBar position="fixed" className='navBar'  >
+      <AppBar position="fixed" className="navBar">
         <Toolbar>
           <IconButton
             size="large"
@@ -53,10 +64,50 @@ const Header = () => {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }} className="navbarTitle">
+          <Typography
+            variant="h6"
+            component="div"
+            sx={{ flexGrow: 1 }}
+            className="navbarTitle"
+          >
             PennyWise
           </Typography>
-
+          <Box
+            sx={{
+              "&:hover": { backgroundColor: "#12358e" },
+              fontWeight: "bold",
+              mr: 2,
+              mt: 0.4,
+              p: 0.5,
+              borderRadius: 2,
+            }}
+          >
+            <Button
+              className="dashboardBtn"
+              id="fade-button"
+              onClick={handleHomeClick}
+            >
+              Home
+            </Button>
+          </Box>
+          <Box
+            sx={{
+              "&:hover": { backgroundColor: "#12358e" },
+              fontWeight: "bold",
+              mr: 130,
+              mt: 0.4,
+              p: 0.5,
+              borderRadius: 2,
+            }}
+          >
+            <Button
+              className="dashboardBtn"
+              id="fade-button"
+              onClick={handleDashboardClick}
+            >
+              Dashboard
+            </Button>
+          </Box>
           <div>
             <IconButton
               size="large"
