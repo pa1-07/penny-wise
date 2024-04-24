@@ -48,20 +48,42 @@ const addTransaction = async (req, res) => {
     res.status(201).json({ success: true, newTransaction });
   } catch (e) {
     console.error(e);
-    res.status(400).send({ success: false, e });
+    res.status(400).json({ success: false, e });
   }
 };
 
 const editTransaction = async (req, res) => {
   try {
-    const editTransaction = await transactionModel.findOneAndUpdate(
-      {_id: req.body.transactionid},
-      req.body.payload
-    )
-    res.status(200).send({success:true, editTransaction})
+    const { transactionId, payload } = req.body;
+    const editTransaction = await transactionModel.findByIdAndUpdate(
+      transactionId,
+      payload,
+      { new: true } // To return the updated document
+    );
+
+    if (!editTransaction) {
+      return res
+        .status(404)
+        .json({ success: false, error: "Transaction not found" });
+    }
+
+    res.status(200).json({ success: true, editTransaction });
   } catch (e) {
     console.error(e);
-    res.status(400).send({ success: false, e });
+    res.status(400).json({ success: false, error: e.message });
+  }
+};
+
+const deleteTransaction = async (req, res) => {
+  try {
+    const { transactionId } = req.body;  
+    const deleteTransaction = await transactionModel.findByIdAndDelete(
+      transactionId
+    ) 
+    res.status(200).json({ success: true, deleteTransaction });
+  } catch (e) {
+    console.error(e);
+    res.status(400).json({ success: false, error: e.message });
   }
 };
 
@@ -70,4 +92,5 @@ module.exports = {
   addTransaction,
   getDashboardTransaction,
   editTransaction,
+  deleteTransaction,
 };

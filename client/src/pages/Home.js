@@ -15,10 +15,14 @@ import {
   ADD_TRANSACTION_API,
   GET_TRANSACTION_API,
   EDIT_TRANSACTION_API,
+  DELETE_TRANSACTION_API,
 } from "../services/api";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import moment from "moment";
+import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
+import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
+
 import {
   TableContainer,
   Table,
@@ -90,6 +94,7 @@ const Home = () => {
   const [frequency, setFrequency] = useState("7");
   const [selectedDate, setSelectedDate] = useState([]);
   const [type, setType] = useState("all");
+  const [editable, setEditable] = useState(null);
 
   const modalOpen = () => {
     setAdd(true);
@@ -106,6 +111,7 @@ const Home = () => {
       userid: "",
     });
     setAdd(false);
+    setEditable(null);
   };
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -114,22 +120,56 @@ const Home = () => {
       console.log(user);
 
       setLoading(true);
-
-      const transdata = await axios.post(ADD_TRANSACTION_API, {
-        ...data,
-        userid: user.email,
-      });
-      console.log("Trans data", transdata);
-
-      setLoading(false);
-      setShowSuccessAlert(true);
+      if (editable) {
+        const transdata = await axios.post(EDIT_TRANSACTION_API, {
+          payload: {
+            ...data,
+            userid: user.email,
+          },
+          transactionId: editable._id,
+        });
+        console.log("Trans data", transdata);
+        getAllTransaction();
+        setLoading(false);
+        setShowSuccessAlert(true);
+      } else {
+        const transdata = await axios.post(ADD_TRANSACTION_API, {
+          ...data,
+          userid: user.email,
+        });
+        console.log("Trans data", transdata);
+        getAllTransaction();
+        setLoading(false);
+        setShowSuccessAlert(true);
+      }
       setAdd(false);
+      setEditable(null);
     } catch (e) {
       setLoading(false);
       setShowFailureAlert(true);
       console.log("Error occured", e);
     }
   };
+
+  const getAllTransaction = async () => {
+    try {
+      const user = JSON.parse(localStorage.getItem("user"));
+      setLoading(true);
+      const res = await axios.post(GET_TRANSACTION_API, {
+        userid: user.email,
+        frequency,
+        selectedDate,
+        type,
+      });
+      setLoading(false);
+      setAllTransaction(res.data.transactions);
+      setTotalRows(res.data.transactions.length); // Update totalRows with the total number of transactions
+      console.log("Get transactions data", res.data.transactions);
+    } catch (e) {
+      console.error("Unable to get transactions data", e);
+    }
+  };
+
   const handleChange = (e) => {
     setData({ ...data, [e.target.name]: e.target.value });
   };
@@ -151,6 +191,47 @@ const Home = () => {
     setPage(0);
   };
 
+  const handleDelete = async (row) => {
+    try {
+      setLoading(true);
+      await axios.post(DELETE_TRANSACTION_API, {
+        transactionId: row._id,
+      });
+      getAllTransaction();
+      setLoading(false);
+    } catch (e) {
+      setLoading(false);
+      console.log(e);
+    }
+  };
+
+  const MomentTableCell = ({ date }) => {
+    const formattedDate = date ? moment(date).format("YYYY-MM-DD") : "";
+
+    return (
+      <TableCell>
+        <span>{formattedDate}</span>
+      </TableCell>
+    );
+  };
+
+  useEffect(() => {
+    if (editable) {
+      const formattedDate = moment(editable.date).format("YYYY-MM-DD");
+      setData({ ...editable, date: formattedDate }); // Update data state if editable is not null
+    } else {
+      setData({
+        amount: "",
+        type: "",
+        category: "",
+        reference: "",
+        description: "",
+        date: "",
+        userid: "",
+      });
+    }
+  }, [editable]);
+
   useEffect(() => {
     const getAllTransaction = async () => {
       try {
@@ -164,12 +245,13 @@ const Home = () => {
         });
         setLoading(false);
         setAllTransaction(res.data.transactions);
-        setTotalRows(res.data.transactions.length); // Update totalRows with the total number of transactions
+        setTotalRows(res.data.transactions.length);
         console.log("Get transactions data", res.data.transactions);
       } catch (e) {
         console.error("Unable to get transactions data", e);
       }
     };
+
     getAllTransaction();
   }, [frequency, selectedDate, type]);
 
@@ -302,11 +384,38 @@ const Home = () => {
                 : allTransaction
               ).map((row, index) => (
                 <TableRow key={index}>
-                  <TableCell>{row.date}</TableCell>
+                  <MomentTableCell date={row.date} />
                   <TableCell>{row.amount}</TableCell>
                   <TableCell>{row.type}</TableCell>
                   <TableCell>{row.category}</TableCell>
                   <TableCell>{row.reference}</TableCell>
+                  <TableCell>
+                    <EditOutlinedIcon
+                      sx={{
+                        mr: 2,
+                        "&:hover": {
+                          cursor: "pointer",
+                          color: "grey",
+                        },
+                      }}
+                      onClick={() => {
+                        setEditable(row);
+                        console.log("Edit value", row);
+                        modalOpen();
+                      }}
+                    />
+                    <DeleteOutlinedIcon
+                      sx={{
+                        "&:hover": {
+                          cursor: "pointer",
+                          color: "red",
+                        },
+                      }}
+                      onClick={() => {
+                        handleDelete(row);
+                      }}
+                    />
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -344,7 +453,7 @@ const Home = () => {
               gutterBottom
               sx={{ fontWeight: "bold", textAlign: "center" }}
             >
-              Add Transaction
+              {editable ? "Edit Transaction" : "Add Transaction"}
             </Typography>
 
             <Box

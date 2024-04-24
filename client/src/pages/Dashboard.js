@@ -71,8 +71,8 @@ const Dashboard = () => {
   // Function to generate random HSL color
   const randomHSLColor = () => {
     const hue = Math.floor(Math.random() * 360); // Random hue value between 0 and 360
-    const saturation = Math.floor(Math.random() * 30) + 70; // Random saturation value between 50 and 100
-    const lightness = Math.floor(Math.random() * 12) + 70; // Random lightness value between 70 and 90
+    const saturation = Math.floor(Math.random() * 40) + 70; // Random saturation value between 50 and 100
+    const lightness = Math.floor(Math.random() * 1) + 60; // Random lightness value between 70 and 90
     return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
   };
 
@@ -89,7 +89,7 @@ const Dashboard = () => {
     title: {
       text: "Transaction Amounts by Category",
       style: {
-        fontSize: "20px", // Change the font size of the title
+        fontSize: "17px", // Change the font size of the title
         color: "darkpurple", // Change the color of the title
         margin: "20px 0 10px 0", // Change the margin of the title (top, right, bottom, left)
       },
@@ -136,7 +136,7 @@ const Dashboard = () => {
       type: "pie",
       height: 370,
     },
-    
+
     title: {
       text: "Transaction Distribution",
       style: {
@@ -147,6 +147,12 @@ const Dashboard = () => {
     },
     credits: {
       enabled: false, // Disable the Highcharts.com link
+    },
+    plotOptions: {
+      pie: {
+        innerSize: "60%",
+        // Set inner radius to create a donut chart
+      },
     },
     series: [
       {
@@ -163,7 +169,8 @@ const Dashboard = () => {
   const pieChartOptions = {
     chart: {
       type: "pie",
-      height: 370,
+      height: 340,
+      marginTop: 70,
     },
     title: {
       text: "Total Income and Expense amounts",
@@ -176,6 +183,7 @@ const Dashboard = () => {
     credits: {
       enabled: false, // Disable the Highcharts.com link
     },
+
     series: [
       {
         name: "Amount",
@@ -215,26 +223,58 @@ const Dashboard = () => {
             <CircularProgress disableShrink />
           </Box>
         )}
+        <Box sx={{ maxWidth: "100%", overflowX: "hidden" }}>
+          <Box
+            textAlign="center"
+            mt={1}
+            sx={{
+              margin: "0 auto", // Center the box horizontally
+              maxWidth: "900px", // Optional: Set a maximum width for the box
+            }}
+          >
+            <Typography
+              variant="h5"
+              p={1}
+              sx={{
+                fontWeight: "bold",
+                color: "darkpurple",
+              }}
+            >
+              Dashboard
+            </Typography>
+          </Box>
 
-        <Typography
-          variant="h5"
-          mt={0}
-          ml={0}
-          p={1}
-          sx={{ fontWeight: "bold", color: "darkpurple" }}
-        >
-          Dashboard
-        </Typography>
+          <Box
+            display="flex"
+            flexDirection={{ xs: "column", md: "row" }}
+            justifyContent="space-between"
+            mt={4}
+            px={4}
+          >
+            <Box className="chart-wrapper" mb={{ xs: 2, md: 0 }} width="100%">
+              <HighchartsReact highcharts={Highcharts} options={pieOptions} />
+            </Box>
+            <Box className="chart-wrapper" mb={{ xs: 2, md: 0 }} width="100%">
+              <HighchartsReact
+                highcharts={Highcharts}
+                options={pieChartOptions}
+              />
+            </Box>
+          </Box>
 
-        <Box className="chart-wrapper" mt={2} p={3}>
-          <HighchartsReact highcharts={Highcharts} options={pieOptions} />
-        </Box>
-        <Box className="chart-wrapper" mt={2} p={3}>
-          <HighchartsReact highcharts={Highcharts} options={pieChartOptions} />
-        </Box>
-
-        <Box className="chart-wrapper" mt={2} p={5} mb={2}>
-          <HighchartsReact highcharts={Highcharts} options={barOptions} />
+          <Box
+            mt={4}
+            px={4}
+            maxWidth="100%"
+            sx={{
+              borderRadius: "10px",
+              boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+            }}
+          >
+            <Box className="chart-wrapper" mt={2} p={5}>
+              <HighchartsReact highcharts={Highcharts} options={barOptions} />
+            </Box>
+          </Box>
         </Box>
       </Layout>
     </>

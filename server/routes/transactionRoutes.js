@@ -1,11 +1,13 @@
 const express = require ('express')
-const {addTransaction, getAllTransaction, getDashboardTransaction, editTransaction} = require('../controllers/transactionController')
+const {addTransaction, getAllTransaction, getDashboardTransaction, editTransaction, deleteTransaction} = require('../controllers/transactionController')
 
 const router = express.Router()
 
 router.post('/add-transaction', addTransaction)
 
-router.post('/edit-transaction', editTransaction)
+router.post('/edd-transaction', editTransaction)
+
+router.post('/delete-transaction', deleteTransaction)
 
 router.post('/get-transaction', getAllTransaction)
 
