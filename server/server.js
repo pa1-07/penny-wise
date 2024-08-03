@@ -6,6 +6,7 @@ const transactionRoutes = require('./routes/transactionRoutes')
 const connectDb = require('./config/connectDb');
 const cors = require('cors')
 const dotenv = require('dotenv')
+dotenv.config()
 
 
 const app = express();
@@ -17,7 +18,6 @@ connectDb()
 
 app.use(cors())
 
-dotenv.config()
 
 app.use(bodyParser.json());
 
